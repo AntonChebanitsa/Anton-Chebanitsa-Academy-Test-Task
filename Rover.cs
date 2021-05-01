@@ -73,8 +73,37 @@ namespace Anton_Chebanitsa_Academy_Test_Task
                     }
                 }
             }
-
             return null;
+        }
+
+        private static List<MyPoint> GetNeighbours(MyPoint currPoint,
+            Point target,
+            int[,] field)
+        {
+            var result = new List<MyPoint>();
+
+            Point[] neighbours = new Point[4];
+            neighbours[0] = new Point(currPoint.Position.X - 1, currPoint.Position.Y);
+            neighbours[1] = new Point(currPoint.Position.X, currPoint.Position.Y - 1);
+            neighbours[2] = new Point(currPoint.Position.X + 1, currPoint.Position.Y);
+            neighbours[3] = new Point(currPoint.Position.X, currPoint.Position.Y + 1);
+
+            foreach (var neighbour in neighbours)
+            {
+                if (neighbour.X < 0 || neighbour.X >= field.GetLength(0) &&
+                    (neighbour.Y < 0 || neighbour.Y >= field.GetLength(1)))
+                    continue;
+                var newPoint = new MyPoint()
+                {
+                    Position = neighbour,
+                    PrewPoint = currPoint,
+                    FullPathLength = currPoint.FullPathLength +
+                                     GetCostTransitionToNeighbours(),
+                    HeuristicPathLength = GetHeuristicPathLength(neighbour, target)
+                };
+                result.Add(newPoint);
+            }
+            return result;
         }
 
         private static int GetHeuristicPathLength(Point from, Point to)
@@ -89,14 +118,6 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             //todo calculation of the optimal route
         }
 
-        private static List<MyPoint> GetNeighbours(MyPoint pathNode,
-            Point goal,
-            int[,] field)
-        {
-            throw new NotImplementedException();
-            //todo look around current point and getting list of neighbours
-
-        }
         private static int GetCostTransitionToNeighbours()
         {
             return 1;//todo calculate the cost of the transition
