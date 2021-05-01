@@ -98,7 +98,7 @@ namespace Anton_Chebanitsa_Academy_Test_Task
                     Position = neighbour,
                     PrewPoint = currPoint,
                     FullPathLength = currPoint.FullPathLength +
-                                     GetCostTransitionToNeighbours(),
+                                     GetCostTransitionToNeighbours(field, currPoint, neighbour),
                     HeuristicPathLength = GetHeuristicPathLength(neighbour, target)
                 };
                 result.Add(newPoint);
@@ -106,10 +106,9 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             return result;
         }
 
-        private static int GetHeuristicPathLength(Point from, Point to)
+        private static int GetHeuristicPathLength(Point pointFrom, Point pointTo)
         {
-            throw new NotImplementedException();
-            //todo approximate distance estimate
+            return Math.Abs(pointFrom.X - pointTo.X) + Math.Abs(pointFrom.Y - pointTo.Y);
         }
 
         private static List<Point> GetPath(MyPoint path)
@@ -118,9 +117,9 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             //todo calculation of the optimal route
         }
 
-        private static int GetCostTransitionToNeighbours()
+        private static int GetCostTransitionToNeighbours(int[,] field, MyPoint pointFrom, Point pointTo)
         {
-            return 1;//todo calculate the cost of the transition
+            return 1 + Math.Abs(field[pointFrom.Position.X, pointFrom.Position.Y] - field[pointTo.X, pointTo.Y]);
         }
 
     }
