@@ -27,11 +27,8 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             var pathToWriteFile = @"C:\Users\USER\source\repos\TextFileForIntership\";
             var testVariable = new int[,]
             {
-                {1, 0, 2, 3, 4},
-                {1, 4, 1, 2, 3},
-                {2, 1, 4, 1, 2},
-                {3, 3, 1, 0, 0},
-                {4, 3, 1, 1, 0}
+                {0, 4},
+                {1, 3}
             };
 
             CalculateRoverPath(testVariable, pathToWriteFile);
