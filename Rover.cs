@@ -113,8 +113,18 @@ namespace Anton_Chebanitsa_Academy_Test_Task
 
         private static List<Point> GetPath(MyPoint path)
         {
-            throw new NotImplementedException();
-            //todo calculation of the optimal route
+            var result = new List<Point>();
+            var current = path;
+
+            while (current != null)
+            {
+
+                result.Add(current.Position);
+                current = current.PrewPoint;
+
+            }
+            result.Reverse();
+            return result;
         }
 
         private static int GetCostTransitionToNeighbours(int[,] field, MyPoint pointFrom, Point pointTo)
