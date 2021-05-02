@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Anton_Chebanitsa_Academy_Test_Task
 {
@@ -24,19 +24,20 @@ namespace Anton_Chebanitsa_Academy_Test_Task
     {
         private static void Main()
         {
+            var pathToWriteFile = @"C:\Users\USER\source\repos\TextFileForIntership\";
             var testVariable = new int[,]
             {
-                { 1, 1, 2, 3, 4},
-                { 1, 0, 1, 2, 3},
-                { 2, 1, 1, 1, 2},
-                { 3, 3, 1, 0, 0},
-                { 4, 3, 1, 1, 0}
+                {1, 0, 2, 3, 4},
+                {1, 4, 1, 2, 3},
+                {2, 1, 4, 1, 2},
+                {3, 3, 1, 0, 0},
+                {4, 3, 1, 1, 0}
             };
 
-            CalculateRoverPath(testVariable);
+            CalculateRoverPath(testVariable, pathToWriteFile);
         }
 
-        public static void CalculateRoverPath(int[,] map)
+        private static void CalculateRoverPath(int[,] map, string path)
         {
             {
                 var start = new Point(0, 0);
@@ -60,10 +61,9 @@ namespace Anton_Chebanitsa_Academy_Test_Task
 
                     if (prewPoint.Position == pointTo)
                     {
-                        var ваы = GetPath(prewPoint);
-                        //todo use method print
-                        var x = 0;
-                        //PrintPathToFile();
+                        var pathPointList = GetPath(prewPoint);
+
+                        PrintPathToFile(pathPointList, path);
                     }
 
                     openPoints.Remove(prewPoint);
@@ -78,8 +78,7 @@ namespace Anton_Chebanitsa_Academy_Test_Task
 
                         if (openNode == null)
                             openPoints.Add(neighbourPoint);
-                        else
-                        if (openNode.FullPathLength > neighbourPoint.FullPathLength)
+                        else if (openNode.FullPathLength > neighbourPoint.FullPathLength)
                         {
                             openNode.PrewPoint = prewPoint;
                             openNode.FullPathLength = neighbourPoint.FullPathLength;
@@ -116,6 +115,7 @@ namespace Anton_Chebanitsa_Academy_Test_Task
                 };
                 result.Add(newPoint);
             }
+
             return result;
         }
 
@@ -124,18 +124,17 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             return Math.Abs(pointFrom.X - pointTo.X) + Math.Abs(pointFrom.Y - pointTo.Y);
         }
 
-        private static List<Point> GetPath(MyPoint path)
+        private static List<MyPoint> GetPath(MyPoint path)
         {
-            var result = new List<Point>();
+            var result = new List<MyPoint>();
             var current = path;
 
             while (current != null)
             {
-
-                result.Add(current.Position);
+                result.Add(current);
                 current = current.PrewPoint;
-
             }
+
             result.Reverse();
             return result;
         }
@@ -145,14 +144,24 @@ namespace Anton_Chebanitsa_Academy_Test_Task
             return 1 + Math.Abs(field[pointFrom.Position.X, pointFrom.Position.Y] - field[pointTo.X, pointTo.Y]);
         }
 
-        private static void PrintPathToFile()
+        private static void PrintPathToFile(List<MyPoint> points, string path)
         {
-            throw new NotImplementedException();
+            using var sw = new StreamWriter(path + "path-plan.txt", false);
+            {
+                var fuel = 0;
+                foreach (var point in points)
+                {
+                    sw.Write($"[{point.Position.X}][{point.Position.Y}]");
+                    fuel = point.FullPathLength;
+                    if (points.Last().Position != point.Position)
+                    {
+                        sw.Write("->");
+                    }
+                }
 
-        //todo implement method to write points to file
-        //// template [0][0]->[1][0]->[1][1]
-        //steps: 2
-        //fuel: 5
+                sw.WriteLine($"\nsteps: {points.Count - 1}");
+                sw.WriteLine($"fuel: {fuel}");
+            }
         }
     }
 }
